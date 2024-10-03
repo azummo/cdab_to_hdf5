@@ -96,6 +96,17 @@ void eos_hdf5::create_hdf5(std::string hdf5_filename)
   // Create ID and type DataSets
   DataSet id = event_group.createDataSet("id",PredType::NATIVE_ULONG,*event_space,prop);
   DataSet type = event_group.createDataSet("type",PredType::NATIVE_INT,*event_space,prop);
+
+  // Create meta DataSets
+/*
+  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
+  DataSet meta_run_number = meta_group.createDataSet("run_number",PredType::NATIVE_UINT32,*scalar);
+  DataSet meta_outfile = meta_group.createDataSet("outfile",PredType::string,*scalar);
+  DataSet meta_run_type = meta_group.createDataSet("run_type",PredType::NATIVE_UINT32,*scalar);
+  DataSet meta_r = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
+  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
+  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
+*/
 }
 
 void eos_hdf5::fill_caen_board_buffers(int board)
@@ -316,3 +327,4 @@ void eos_hdf5::write()
   // Clear events from the buffer
   event_buffer.clear();
 }
+

@@ -16,14 +16,14 @@
 #include <ptb.h>
 #include <uthash.h>
 
-#define DIGITIZERS 0x1ffff
 #define NDIGITIZERS 17
 
 /** Output record types. */
 typedef enum {
   EMPTY,
   DETECTOR_EVENT,
-  RUN_HEADER,
+  RUN_START,
+  RUN_END,
 } RecordType;
 
 /**
@@ -55,6 +55,7 @@ typedef struct {
   uint16_t bits;
   uint16_t samples;
   float ns_sample;
+  uint16_t channel_enabled_mask;
   uint32_t counter;
   uint32_t timetag;
   uint16_t exttimetag;
@@ -100,6 +101,44 @@ unsigned int event_count();
 // Check whether all components of an event are populated
 uint8_t event_ready(Event* s);
 
+/**
+ * @struct RunStart
+ *
+ * Eos run header
+*/
+typedef struct {
+  uint32_t type;
+  uint32_t run_number;
+  char outfile[200];
+  int run_type;
+  int source_type;
+  float source_x;
+  float source_y;
+  float source_z;
+  float source_theta;
+  float source_phi;
+  int fiber_number;
+  float laserball_size;
+  float laser_wavelength;
+  uint64_t first_event_id;
+} RunStart;
+
+
+typedef struct {
+  uint32_t type;
+  uint32_t date;
+  uint32_t time;
+  uint32_t daq_ver;
+  uint32_t runmask;
+  uint64_t last_event_id;
+  uint32_t run_number;
+} RunEnd;
+
+// Handle run start header
+void accept_run_start(char* data);
+
+// Handle run end header
+void accept_run_end(char* data);
 
 /**
  * @struct Record
@@ -116,36 +155,19 @@ typedef struct {
 } Record;
 
 // Push a Record onto the queue
-void record_push(uint64_t key, RecordType type, void* data);
+void record_push(Record** rec, uint64_t key, RecordType type, void* data);
+
+// Access a Record
+Record* record_at(Record** rec, uint64_t key);
 
 // Pop a record from the queue
-Record* record_pop(uint64_t key);
+Record* record_pop(Record** rec, uint64_t key);
 
 // Return a count of the queue size
-unsigned int record_count();
+unsigned int record_count(Record** rec);
 
 // Get the key for the next record to process (key sorted)
-uint64_t record_next();
-
-
-/**
- * @struct RHDR
- *
- * RHDR: SNO/SNO+ run header
-*/
-typedef struct {
-  uint32_t type;
-  uint32_t date;
-  uint32_t time;
-  uint32_t daq_ver;
-  uint32_t calib_trial_id;
-  uint32_t srcmask;
-  uint32_t runmask;
-  uint32_t cratemask;
-  uint32_t first_event_id;
-  uint32_t valid_event_id;
-  uint32_t run_id;
-} RHDR;
+uint64_t record_next(Record** rec);
 
 #endif
 

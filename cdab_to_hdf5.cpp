@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
 
   CDABHeader chdr;
-  RHDR rhdr;
+  RunStart rhdr;
   Event e;
   std::ifstream cdab;
   eos_hdf5 eos_hdf5_file;
@@ -62,23 +62,27 @@ int main(int argc, char** argv)
 	  // Add event to hdf5 buffer
 	  eos_hdf5_file.fill(e);
 	  break;
-	case RUN_HEADER:
+	case RUN_START:
           cdab.read(reinterpret_cast<char*>(&rhdr),sizeof(rhdr));
-/*
           printf("Run Header Type: %u \n", rhdr.type);
-          printf("Run Header Date: %u \n", rhdr.date);
-          printf("Run Header Time: %u \n", rhdr.time);
-          printf("Run Header DAQ: %u \n", rhdr.daq_ver);
-          printf("Run Header Calib: %u \n", rhdr.calib_trial_id);
-          printf("Run Header Src: %u \n", rhdr.srcmask);
-          printf("Run Header Run: %u \n", rhdr.runmask);
-          printf("Run Header Crate: %u \n", rhdr.cratemask);
-          printf("Run Header First: %u \n", rhdr.first_event_id);
-          printf("Run Header Valid: %u \n", rhdr.valid_event_id);
-          printf("Run Header RunID: %u \n", rhdr.run_id);
-*/
+          printf("Run Header Number: %u \n", rhdr.run_number);
+          printf("Run Header Filename: %s \n", rhdr.outfile);
+          printf("Run Header Run Type: %u \n", rhdr.run_type);
+          printf("Run Header Source Type: %u \n", rhdr.source_type);
+          printf("Run Header Source x: %f \n", rhdr.source_x);
+          printf("Run Header Source y: %f \n", rhdr.source_y);
+          printf("Run Header Source z: %f \n", rhdr.source_z);
+          printf("Run Header Source theta: %f \n", rhdr.source_theta);
+          printf("Run Header Source phi: %f \n", rhdr.source_phi);
+          printf("Run Header Fiber number: %u \n", rhdr.fiber_number);
+          printf("Run Header Laserball size: %f \n", rhdr.laserball_size);
+          printf("Run Header Laser wavelength: %f \n", rhdr.laser_wavelength);
+          printf("Run Header First Event ID: %lu \n", rhdr.first_event_id);
+//          eos_hdf5_file.fill_meta(rhdr);
 	  break;
-        default:
+        case RUN_END:
+          break;
+	default:
 	  printf("Found header with unknown type, size: %u, %u \nSomething has gone wrong", chdr.record_type, chdr.size);
           return 1;
       }
