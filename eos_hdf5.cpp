@@ -97,16 +97,21 @@ void eos_hdf5::create_hdf5(std::string hdf5_filename)
   DataSet id = event_group.createDataSet("id",PredType::NATIVE_ULONG,*event_space,prop);
   DataSet type = event_group.createDataSet("type",PredType::NATIVE_INT,*event_space,prop);
 
-  // Create meta DataSets
-/*
-  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
-  DataSet meta_run_number = meta_group.createDataSet("run_number",PredType::NATIVE_UINT32,*scalar);
-  DataSet meta_outfile = meta_group.createDataSet("outfile",PredType::string,*scalar);
-  DataSet meta_run_type = meta_group.createDataSet("run_type",PredType::NATIVE_UINT32,*scalar);
-  DataSet meta_r = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
-  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
-  DataSet meta_type = meta_group.createDataSet("type",PredType::NATIVE_UINT32,*scalar);
-*/
+  // Create Meta DataSets
+  Attribute meta_type = event_group.createAttribute("type",PredType::NATIVE_UINT32,*scalar);
+  Attribute run_number = event_group.createAttribute("run_number",PredType::NATIVE_UINT32,*scalar);
+  Attribute outfile_name = event_group.createAttribute("outfile",PredType::NATIVE_CHAR,*scalar);
+  Attribute run_type = event_group.createAttribute("run_type",PredType::NATIVE_INT,*scalar);
+  Attribute source_type = event_group.createAttribute("source_type",PredType::NATIVE_INT,*scalar);
+  Attribute source_x = event_group.createAttribute("source_x",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_y = event_group.createAttribute("source_y",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_z = event_group.createAttribute("source_z",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_theta = event_group.createAttribute("source_theta",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_phi = event_group.createAttribute("source_phi",PredType::NATIVE_FLOAT,*scalar);
+  Attribute fiber_number = event_group.createAttribute("fiber_number",PredType::NATIVE_INT,*scalar);
+  Attribute laserball_size = event_group.createAttribute("laserball_size",PredType::NATIVE_FLOAT,*scalar);
+  Attribute laser_wavelength = event_group.createAttribute("laser_wavelength",PredType::NATIVE_FLOAT,*scalar);
+  Attribute first_event_id = event_group.createAttribute("first_event_id",PredType::NATIVE_UINT64,*scalar);
 }
 
 void eos_hdf5::fill_caen_board_buffers(int board)
@@ -160,6 +165,41 @@ void eos_hdf5::fill_other_buffers()
     tv_nsec_buffer.push_back(event.creation_time.tv_nsec);
   }
 }
+
+void eos_hdf5::write_meta(RunStart r)
+{
+  Group meta_group = hdf5_file->openGroup("meta");
+  Attribute meta_type = meta_group.openAttribute("type");
+  Attribute run_number = meta_group.openAttribute("run_number");
+  Attribute outfile_name = meta_group.openAttribute("outfile");
+  Attribute run_type = meta_group.openAttribute("run_type");
+  Attribute source_type = meta_group.openAttribute("source_type");
+  Attribute source_x = meta_group.openAttribute("source_x");
+  Attribute source_y = meta_group.openAttribute("source_y");
+  Attribute source_z = meta_group.openAttribute("source_z");
+  Attribute source_theta = meta_group.openAttribute("source_theta");
+  Attribute source_phi = meta_group.openAttribute("source_phi");
+  Attribute fiber_number = meta_group.openAttribute("fiber_number");
+  Attribute laserball_size = meta_group.openAttribute("laserball_size");
+  Attribute laser_wavelength = meta_group.openAttribute("laser_wavelength");
+  Attribute first_event_id = meta_group.openAttribute("first_event_id");
+
+  meta_type.write(PredType::NATIVE_UINT32, &r.type);
+  run_number.write(PredType::NATIVE_UINT32, &r.run_number);
+  outfile_name.write(PredType::NATIVE_CHAR, &r.outfile);
+  run_type.write(PredType::NATIVE_INT, &r.run_type);
+  source_type.write(PredType::NATIVE_INT, &r.source_type);
+  source_x.write(PredType::NATIVE_FLOAT, &r.source_x);
+  source_y.write(PredType::NATIVE_FLOAT, &r.source_y);
+  source_z.write(PredType::NATIVE_FLOAT, &r.source_z);
+  source_theta.write(PredType::NATIVE_FLOAT, &r.source_theta);
+  source_phi.write(PredType::NATIVE_FLOAT, &r.source_phi);
+  fiber_number.write(PredType::NATIVE_INT, &r.fiber_number);
+  laserball_size.write(PredType::NATIVE_FLOAT, &r.laserball_size);
+  laser_wavelength.write(PredType::NATIVE_FLOAT, &r.laser_wavelength);
+  first_event_id.write(PredType::NATIVE_UINT64, &r.first_event_id);
+}
+
 
 void eos_hdf5::write_attrs(Event e)
 {

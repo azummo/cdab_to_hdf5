@@ -75,6 +75,11 @@ void fill_caen_chan_buffers(int board, int chan);
 void fill_other_buffers();
 
 /**
+ * Write the meta info into the hdf5_file
+ */
+void write_meta(RunStart r);
+
+/**
  * Write the attributes into the hdf5_file
  */
 void write_attrs(Event e);

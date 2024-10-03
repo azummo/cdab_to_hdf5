@@ -30,10 +30,7 @@ int main(int argc, char** argv)
     {
       events++;
       cdab.read(reinterpret_cast<char*>(&chdr),sizeof(chdr));
-/*
-      printf("CDAB Header Type: %u \n", chdr.record_type);
-      printf("CDAB Header Size: %u \n", chdr.size);
-*/
+
       switch(chdr.record_type)
       {
         case EMPTY:
@@ -42,27 +39,11 @@ int main(int argc, char** argv)
         case DETECTOR_EVENT:
           // Attempt to read event according to CDAB Header
           cdab.read(reinterpret_cast<char*>(&e), sizeof(e));
-          // Print some info about the event
-/*
-          printf("Event ID: %lu \n", e.id);
-          printf("Event Type: %u \n", e.type);
-          printf("Event CAEN Status: %u \n", e.caen_status);
-          printf("Event PTB Status: %u \n", e.ptb_status);
-*/
-/*
-          printf("CAEN samples: ");
-
-	  for(int i=0;i<499;i++)
-	  {
-	    printf("%u, ", e.caen[0].channels[0].samples[i]);
-          }
-	  printf("%u]\n",e.caen[0].channels[0].samples[499]);
-          if(e.caen_status==0) break;
-*/
 	  // Add event to hdf5 buffer
 	  eos_hdf5_file.fill(e);
 	  break;
 	case RUN_START:
+          // Just print header information for now
           cdab.read(reinterpret_cast<char*>(&rhdr),sizeof(rhdr));
           printf("Run Header Type: %u \n", rhdr.type);
           printf("Run Header Number: %u \n", rhdr.run_number);
@@ -78,7 +59,8 @@ int main(int argc, char** argv)
           printf("Run Header Laserball size: %f \n", rhdr.laserball_size);
           printf("Run Header Laser wavelength: %f \n", rhdr.laser_wavelength);
           printf("Run Header First Event ID: %lu \n", rhdr.first_event_id);
-//          eos_hdf5_file.fill_meta(rhdr);
+          // TODO fill meta information
+          eos_hdf5_file.write_meta(rhdr);
 	  break;
         case RUN_END:
           break;
