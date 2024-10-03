@@ -24,8 +24,11 @@ int main(int argc, char** argv)
 
   // Open hdf5 file
   eos_hdf5_file.create_hdf5(hdf5_filename);
+  std::cout << "Created HDF5 File" << std::endl;
+  int events = 0;
   while(cdab)
     {
+      events++;
       cdab.read(reinterpret_cast<char*>(&chdr),sizeof(chdr));
 /*
       printf("CDAB Header Type: %u \n", chdr.record_type);
@@ -45,7 +48,16 @@ int main(int argc, char** argv)
           printf("Event Type: %u \n", e.type);
           printf("Event CAEN Status: %u \n", e.caen_status);
           printf("Event PTB Status: %u \n", e.ptb_status);
-          printf("Event First CAEN sample: %u \n", e.caen[0].channels[0].samples[0]);
+*/
+/*
+          printf("CAEN samples: ");
+
+	  for(int i=0;i<499;i++)
+	  {
+	    printf("%u, ", e.caen[0].channels[0].samples[i]);
+          }
+	  printf("%u]\n",e.caen[0].channels[0].samples[499]);
+          if(e.caen_status==0) break;
 */
 	  // Add event to hdf5 buffer
 	  eos_hdf5_file.fill(e);
