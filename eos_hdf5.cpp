@@ -56,7 +56,7 @@ void eos_hdf5::create_hdf5(std::string hdf5_filename)
   // Create each CAEN board group
   for(int board = 0; board<n_boards;board++)
   {
-    Group card_group = caen_group.createGroup(std::to_string(board));
+    Group card_group = caen_group.createGroup(std::to_string(boards[board]));
     // Create Attributes
     Attribute type = card_group.createAttribute("type",PredType::NATIVE_UINT16,*scalar);
     Attribute name = card_group.createAttribute("name",PredType::NATIVE_CHAR,*scalar);
@@ -70,7 +70,7 @@ void eos_hdf5::create_hdf5(std::string hdf5_filename)
     // Create each CAEN channel group
     for(int chan = 0; chan<n_channels; chan++)
     {
-      Group chan_group = card_group.createGroup(std::to_string(chan));
+      Group chan_group = card_group.createGroup("ch" + std::to_string(chan));
       Attribute channel_id_group = chan_group.createAttribute("chID",PredType::NATIVE_UINT32,*scalar);
       Attribute offset = chan_group.createAttribute("offset",PredType::NATIVE_UINT32,*scalar);
       Attribute threshold = chan_group.createAttribute("threshold",PredType::NATIVE_UINT32,*scalar);
@@ -98,20 +98,20 @@ void eos_hdf5::create_hdf5(std::string hdf5_filename)
   DataSet type = event_group.createDataSet("type",PredType::NATIVE_INT,*event_space,prop);
 
   // Create Meta DataSets
-  Attribute meta_type = event_group.createAttribute("type",PredType::NATIVE_UINT32,*scalar);
-  Attribute run_number = event_group.createAttribute("run_number",PredType::NATIVE_UINT32,*scalar);
-  Attribute outfile_name = event_group.createAttribute("outfile",PredType::NATIVE_CHAR,*scalar);
-  Attribute run_type = event_group.createAttribute("run_type",PredType::NATIVE_INT,*scalar);
-  Attribute source_type = event_group.createAttribute("source_type",PredType::NATIVE_INT,*scalar);
-  Attribute source_x = event_group.createAttribute("source_x",PredType::NATIVE_FLOAT,*scalar);
-  Attribute source_y = event_group.createAttribute("source_y",PredType::NATIVE_FLOAT,*scalar);
-  Attribute source_z = event_group.createAttribute("source_z",PredType::NATIVE_FLOAT,*scalar);
-  Attribute source_theta = event_group.createAttribute("source_theta",PredType::NATIVE_FLOAT,*scalar);
-  Attribute source_phi = event_group.createAttribute("source_phi",PredType::NATIVE_FLOAT,*scalar);
-  Attribute fiber_number = event_group.createAttribute("fiber_number",PredType::NATIVE_INT,*scalar);
-  Attribute laserball_size = event_group.createAttribute("laserball_size",PredType::NATIVE_FLOAT,*scalar);
-  Attribute laser_wavelength = event_group.createAttribute("laser_wavelength",PredType::NATIVE_FLOAT,*scalar);
-  Attribute first_event_id = event_group.createAttribute("first_event_id",PredType::NATIVE_UINT64,*scalar);
+  Attribute meta_type = meta_group.createAttribute("type",PredType::NATIVE_UINT32,*scalar);
+  Attribute run_number = meta_group.createAttribute("run_number",PredType::NATIVE_UINT32,*scalar);
+  Attribute outfile_name = meta_group.createAttribute("outfile",PredType::NATIVE_CHAR,*scalar);
+  Attribute run_type = meta_group.createAttribute("run_type",PredType::NATIVE_INT,*scalar);
+  Attribute source_type = meta_group.createAttribute("source_type",PredType::NATIVE_INT,*scalar);
+  Attribute source_x = meta_group.createAttribute("source_x",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_y = meta_group.createAttribute("source_y",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_z = meta_group.createAttribute("source_z",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_theta = meta_group.createAttribute("source_theta",PredType::NATIVE_FLOAT,*scalar);
+  Attribute source_phi = meta_group.createAttribute("source_phi",PredType::NATIVE_FLOAT,*scalar);
+  Attribute fiber_number = meta_group.createAttribute("fiber_number",PredType::NATIVE_INT,*scalar);
+  Attribute laserball_size = meta_group.createAttribute("laserball_size",PredType::NATIVE_FLOAT,*scalar);
+  Attribute laser_wavelength = meta_group.createAttribute("laser_wavelength",PredType::NATIVE_FLOAT,*scalar);
+  Attribute first_event_id = meta_group.createAttribute("first_event_id",PredType::NATIVE_UINT64,*scalar);
 }
 
 void eos_hdf5::fill_caen_board_buffers(int board)

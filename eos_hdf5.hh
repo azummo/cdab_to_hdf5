@@ -13,6 +13,7 @@
 #include <H5Cpp.h>
 #include <vector>
 #include <iostream>
+#include <map>
 #include "ds.h"
 
 class eos_hdf5
@@ -58,6 +59,12 @@ private:
   hsize_t chunk_dims_samples[rank_samples];
   hsize_t offset_samples[rank_samples];
   bool first = true;
+  std::map<int, int> boards { {0,19858}, {1,24190}, {2,24191}, {3,24192},
+                            {4,24193}, {5,24194}, {6,24195}, {7,24196},
+                            {8,24305}, {9,24306}, {10,24307},{11,24308},
+                            {12,24309},{13,24310},{14,24311},{15,24312},
+                            {16,19857} };
+
 public:
 
 /**
